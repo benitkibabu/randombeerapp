@@ -11,7 +11,7 @@ import retrofit2.http.Query;
  * Created by Benit Kibabu on 23/05/2017.
  */
 
-public interface ApiInterface {
+public interface ApiService {
     @GET("beer/random/")
     Call<SearchResult> getBeer(@Query("key") String apiKey, @Query("hasLabels") String hasLabels);
 }

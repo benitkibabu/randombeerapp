@@ -1,8 +1,8 @@
 package com.example.benitkibabu.randombeerapp;
 
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +13,7 @@ import com.example.benitkibabu.randombeerapp.models.Beer;
 import com.example.benitkibabu.randombeerapp.models.Labels;
 import com.example.benitkibabu.randombeerapp.models.SearchResult;
 import com.example.benitkibabu.randombeerapp.rest.ApiClient;
-import com.example.benitkibabu.randombeerapp.rest.ApiInterface;
+import com.example.benitkibabu.randombeerapp.rest.ApiService;
 import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
@@ -27,17 +27,19 @@ public class BeerActivity extends AppCompatActivity {
     TextView title, descriptionText;
 
     ProgressBar pb;
+    ApiService service;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beer);
 
-        labelView = (ImageView) findViewById(R.id.labelView);
-        title = (TextView) findViewById(R.id.title);
-        descriptionText = (TextView) findViewById(R.id.descriptionText) ;
-        pb = (ProgressBar) findViewById(R.id.progressBar);
+        service = ApiClient.getRetrofit().create(ApiService.class);
 
-        getRandomBeer();
+        labelView = (ImageView) findViewById(R.id.label_view);
+        title = (TextView) findViewById(R.id.title);
+        descriptionText = (TextView) findViewById(R.id.description_text) ;
+        pb = (ProgressBar) findViewById(R.id.progressBar);
 
         FloatingActionButton nextButton = (FloatingActionButton) findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -50,9 +52,7 @@ public class BeerActivity extends AppCompatActivity {
 
     void getRandomBeer(){
         showProgressBar();
-        ApiInterface apiService = ApiClient.getRetrofit().create(ApiInterface.class);
-
-        Call<SearchResult> call = apiService.getBeer(getString(R.string.BreweryAPI_KEY), "Y");
+        Call<SearchResult> call = service.getBeer(getString(R.string.BreweryAPI_KEY), "Y");
         call.enqueue(new Callback<SearchResult>() {
             @Override
             public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
@@ -70,7 +70,7 @@ public class BeerActivity extends AppCompatActivity {
 
                     Picasso.with(BeerActivity.this).load(labels.getLarge())
                             .placeholder(R.drawable.prorgress_animation)
-                            .resize(512, 512)
+                            .resize(1024, 1024)
                             .centerCrop()
                             .into(labelView);
 
@@ -87,7 +87,7 @@ public class BeerActivity extends AppCompatActivity {
     }
 
     void showProgressBar(){
-        if(pb !=null)
+        if(pb != null)
             pb.setVisibility(View.VISIBLE);
     }
 
