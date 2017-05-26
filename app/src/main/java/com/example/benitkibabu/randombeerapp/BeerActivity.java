@@ -69,7 +69,7 @@ public class BeerActivity extends AppCompatActivity {
                         descriptionText.setText(beer.getDescription());
 
                     Picasso.with(BeerActivity.this).load(labels.getLarge())
-                            .placeholder(R.drawable.prorgress_animation)
+                            .placeholder(R.drawable.progress_animation)
                             .resize(1024, 1024)
                             .centerCrop()
                             .into(labelView);
